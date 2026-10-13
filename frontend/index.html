@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小说转短剧 · novel-to-drama</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🎬</span>
+      <div>
+        <div class="title">小说转短剧</div>
+        <div class="subtitle">从设定到成片，一站式本地流水线</div>
+      </div>
+    </div>
+    <div class="project-switch">
+      <label>项目</label>
+      <select id="projectSelect"></select>
+      <button id="btnNewProject" class="btn">＋ 新建</button>
+      <button id="btnDeleteProject" class="btn danger ghost" title="删除当前项目">删除</button>
+    </div>
+    <div class="provider-badges" id="providerBadges"></div>
+    <button id="btnSettings" class="btn ghost">⚙ 厂商设置</button>
+  </header>
+
+  <nav class="steps" id="stepNav">
+    <button data-step="settings"><span class="num">1</span>小说设定</button>
+    <button data-step="outline"><span class="num">2</span>大纲</button>
+    <button data-step="chapters"><span class="num">3</span>章节正文</button>
+    <button data-step="visual"><span class="num">4</span>角色与分镜</button>
+    <button data-step="images"><span class="num">5</span>图片生成</button>
+    <button data-step="video"><span class="num">6</span>视频与剧集</button>
+  </nav>
+
+  <div class="jobbar hidden" id="jobbar">
+    <div class="jobbar-main">
+      <span class="spinner" id="jobSpinner"></span>
+      <span id="jobKind" class="job-kind"></span>
+      <span id="jobMessage" class="job-message"></span>
+      <div class="progress"><div class="progress-inner" id="jobProgress"></div></div>
+      <button class="btn small ghost" id="btnJobLogs">日志</button>
+      <button class="btn small danger ghost" id="btnJobCancel">取消</button>
+      <button class="btn small ghost" id="btnJobClose">×</button>
+    </div>
+    <pre class="job-logs hidden" id="jobLogs"></pre>
+  </div>
+
+  <main id="main" class="main"></main>
+
+  <div class="modal hidden" id="modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modalTitle">标题</h3>
+        <button class="btn ghost" id="modalClose">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

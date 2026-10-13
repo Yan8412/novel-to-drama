@@ -19,7 +19,11 @@ def with_suffix(prompt: str, suffix: str) -> str:
     prompt = (prompt or "").strip().rstrip("，,。")
     if not suffix or suffix in prompt:
         return prompt
-    return f"{prompt}，{suffix}"
+    # 去掉提示词里已经出现过的后缀片段，避免重复
+    parts = [p.strip() for p in suffix.replace(",", "，").split("，") if p.strip() and p.strip() not in prompt]
+    if not parts:
+        return prompt
+    return f"{prompt}，{'，'.join(parts)}"
 
 
 # ---------------------------------------------------------------------------

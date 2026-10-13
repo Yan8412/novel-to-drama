@@ -60,7 +60,7 @@ class SelectionUpdate(BaseModel):
 
 
 @router.get("/config")
-def get_config():
+async def get_config():
     s = get_settings()
     sel = get_selection()
     return {
@@ -87,7 +87,7 @@ def get_config():
 
 
 @router.put("/config")
-def update_config(body: SelectionUpdate):
+async def update_config(body: SelectionUpdate):
     s = get_settings()
     values = body.model_dump(exclude_none=True)
     for k, v in values.items():
@@ -117,24 +117,24 @@ class ProjectUpdate(BaseModel):
 
 
 @router.get("/projects")
-def list_projects():
+async def list_projects():
     return [p.summary_dict() for p in get_store().list_projects()]
 
 
 @router.post("/projects")
-def create_project(body: ProjectCreate):
+async def create_project(body: ProjectCreate):
     project = Project(name=body.name, settings=body.settings or NovelSettings())
     get_store().create(project)
     return project
 
 
 @router.get("/projects/{project_id}")
-def get_project(project_id: str):
+async def get_project(project_id: str):
     return _project_or_404(project_id)
 
 
 @router.delete("/projects/{project_id}")
-def delete_project(project_id: str):
+async def delete_project(project_id: str):
     _project_or_404(project_id)
     get_store().delete(project_id)
     return {"ok": True}
@@ -157,7 +157,7 @@ async def update_project(project_id: str, body: ProjectUpdate):
 
 
 @router.post("/projects/{project_id}/outline/generate")
-def generate_outline(project_id: str):
+async def generate_outline(project_id: str):
     _project_or_404(project_id)
     _guard_running(project_id)
     llm = _provider_or_400(current_llm)
@@ -207,7 +207,7 @@ class ChapterUpdate(BaseModel):
 
 
 @router.post("/projects/{project_id}/chapters/{index}/generate")
-def generate_chapter(project_id: str, index: int, body: ChapterGenBody):
+async def generate_chapter(project_id: str, index: int, body: ChapterGenBody):
     _project_or_404(project_id)
     _guard_running(project_id)
     llm = _provider_or_400(current_llm)
@@ -217,7 +217,7 @@ def generate_chapter(project_id: str, index: int, body: ChapterGenBody):
 
 
 @router.post("/projects/{project_id}/chapters/generate-all")
-def generate_all_chapters(project_id: str, body: ChaptersGenAllBody):
+async def generate_all_chapters(project_id: str, body: ChaptersGenAllBody):
     _project_or_404(project_id)
     _guard_running(project_id)
     llm = _provider_or_400(current_llm)
@@ -227,7 +227,7 @@ def generate_all_chapters(project_id: str, body: ChaptersGenAllBody):
 
 
 @router.post("/projects/{project_id}/chapters/{index}/humanize")
-def humanize_chapter(project_id: str, index: int, body: HumanizeBody):
+async def humanize_chapter(project_id: str, index: int, body: HumanizeBody):
     _project_or_404(project_id)
     _guard_running(project_id)
     llm = _provider_or_400(current_llm)
@@ -263,7 +263,7 @@ async def update_chapter(project_id: str, index: int, body: ChapterUpdate):
 
 
 @router.post("/projects/{project_id}/characters/generate")
-def generate_characters(project_id: str):
+async def generate_characters(project_id: str):
     _project_or_404(project_id)
     _guard_running(project_id)
     llm = _provider_or_400(current_visual_llm)
@@ -281,7 +281,7 @@ async def update_characters(project_id: str, body: List[VisualItem]):
 
 
 @router.post("/projects/{project_id}/chapters/{index}/visual/generate")
-def generate_visual(project_id: str, index: int):
+async def generate_visual(project_id: str, index: int):
     _project_or_404(project_id)
     _guard_running(project_id)
     llm = _provider_or_400(current_visual_llm)
@@ -295,7 +295,7 @@ class VisualAllBody(BaseModel):
 
 
 @router.post("/projects/{project_id}/visual/generate-all")
-def generate_visual_all(project_id: str, body: VisualAllBody):
+async def generate_visual_all(project_id: str, body: VisualAllBody):
     _project_or_404(project_id)
     _guard_running(project_id)
     llm = _provider_or_400(current_visual_llm)
@@ -326,7 +326,7 @@ class ImageGenBody(BaseModel):
 
 
 @router.post("/projects/{project_id}/images/estimate")
-def estimate_images(project_id: str, body: ImageGenBody):
+async def estimate_images(project_id: str, body: ImageGenBody):
     project = _project_or_404(project_id)
     targets = M.list_image_targets(project, body.chapter_index, tuple(body.kinds), body.only_missing)
     if body.item_ids:
@@ -336,7 +336,7 @@ def estimate_images(project_id: str, body: ImageGenBody):
 
 
 @router.post("/projects/{project_id}/images/generate")
-def generate_images(project_id: str, body: ImageGenBody):
+async def generate_images(project_id: str, body: ImageGenBody):
     _project_or_404(project_id)
     _guard_running(project_id)
     provider = _provider_or_400(current_image)
@@ -376,7 +376,7 @@ async def update_episodes(project_id: str, body: List[Episode]):
 
 
 @router.get("/projects/{project_id}/episodes/{index}/estimate")
-def estimate_episode(project_id: str, index: int):
+async def estimate_episode(project_id: str, index: int):
     project = _project_or_404(project_id)
     ep = project.get_episode(index)
     if ep is None:
@@ -390,7 +390,7 @@ class VideoGenBody(BaseModel):
 
 
 @router.post("/projects/{project_id}/episodes/{index}/videos/generate")
-def generate_episode_videos(project_id: str, index: int, body: VideoGenBody):
+async def generate_episode_videos(project_id: str, index: int, body: VideoGenBody):
     project = _project_or_404(project_id)
     ep = project.get_episode(index)
     if ep is None:
@@ -407,7 +407,7 @@ def generate_episode_videos(project_id: str, index: int, body: VideoGenBody):
 
 
 @router.post("/projects/{project_id}/episodes/{index}/render")
-def render_episode(project_id: str, index: int):
+async def render_episode(project_id: str, index: int):
     _project_or_404(project_id)
     _guard_running(project_id)
     store = get_store()
@@ -421,7 +421,7 @@ def render_episode(project_id: str, index: int):
 
 
 @router.get("/jobs/{job_id}")
-def get_job(job_id: str):
+async def get_job(job_id: str):
     job = get_job_manager().get(job_id)
     if job is None:
         raise HTTPException(404, "任务不存在")
@@ -429,12 +429,12 @@ def get_job(job_id: str):
 
 
 @router.get("/projects/{project_id}/jobs")
-def list_jobs(project_id: str):
+async def list_jobs(project_id: str):
     return [_job_response(j) for j in get_job_manager().list(project_id)[:20]]
 
 
 @router.post("/jobs/{job_id}/cancel")
-def cancel_job(job_id: str):
+async def cancel_job(job_id: str):
     if not get_job_manager().cancel(job_id):
         raise HTTPException(404, "任务不存在")
     return {"ok": True}
@@ -448,7 +448,7 @@ files_router = APIRouter()
 
 
 @files_router.get("/files/{project_id}/{path:path}")
-def get_file(project_id: str, path: str):
+async def get_file(project_id: str, path: str):
     store = get_store()
     try:
         target = store.resolve_asset(project_id, path)
