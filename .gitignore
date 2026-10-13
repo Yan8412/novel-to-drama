@@ -1,0 +1,28 @@
+# 密钥与本地配置（切勿提交）
+.env
+.env.local
+*.env
+!.env.example
+
+# 本地数据（小说、图片、视频等）
+data/
+*.sqlite
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pip-cache/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
