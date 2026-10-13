@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import shutil
+from pathlib import Path
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException
@@ -80,7 +81,7 @@ async def get_config():
             "kling": f"{s.kling_model}/{s.kling_mode}",
         },
         "cost": {"per_image_cny": s.cost_per_image_cny, "per_video_clip_cny": s.cost_per_video_clip_cny},
-        "ffmpeg_ok": bool(shutil.which(s.ffmpeg_path)) or s.ffmpeg_path not in ("ffmpeg", "ffmpeg.exe"),
+        "ffmpeg_ok": bool(shutil.which(s.ffmpeg_path)) or Path(s.ffmpeg_path).is_file(),
         "data_dir": str(s.data_path),
         "default_prompts": P.defaults(),
     }

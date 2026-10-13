@@ -18,7 +18,7 @@ VIDEO_PROVIDERS = ("mock", "kling", "jimeng")
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(PROJECT_ROOT / ".env"),
-        env_file_encoding="utf-8",
+        env_file_encoding="utf-8-sig",  # 兼容 Windows 记事本保存的带 BOM 文件
         extra="ignore",
         case_sensitive=False,
     )
