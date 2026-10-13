@@ -60,7 +60,7 @@ class WanxImageProvider(ImageProvider):
             w, h = aspect_to_size(aspect_ratio, 1440)
             scale = (1280 * 1280 / (w * h)) ** 0.5
             if scale > 1:
-                w, h = int(w * scale // 16 * 16), int(h * scale // 16 * 16)
+                w, h = (-(-int(w * scale) // 16)) * 16, (-(-int(h * scale) // 16)) * 16  # 向上取整到 16 的倍数
             return f"{w}*{h}"
         w, h = aspect_to_size(aspect_ratio, 1280)
         return f"{w}*{h}"

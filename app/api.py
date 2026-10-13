@@ -98,7 +98,7 @@ async def update_config(body: SelectionUpdate):
         if v and not s.provider_available(kind, v):
             raise HTTPException(400, f"{v} 尚未配置密钥，请在 .env 中填写后重启")
     get_selection().update(values)
-    return get_config()
+    return await get_config()
 
 
 # ---------------------------------------------------------------------------
